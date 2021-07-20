@@ -5,7 +5,7 @@ import { connect, useDispatch, useSelector } from 'react-redux';
 import { getDevices } from 'store/reducers/devices';
 import { getEntries } from 'store/reducers/entries';
 import { useEffect, useState } from 'react';
-import { HStack, Button, Box, Spacer, useColorMode } from '@chakra-ui/react';
+import { Flex, Stack, HStack, Button, Box, Spacer, useColorMode } from '@chakra-ui/react';
 import { Line } from 'react-chartjs-2';
 
 export function Home() {
@@ -69,8 +69,8 @@ export function Home() {
     datasets: [
       {
         label: 'LDR',
-        backgroundColor: 'rgb(122, 201, 152)',
-        borderColor: 'rgb(122, 201, 152)',
+        backgroundColor: (colorMode == 'dark' ? 'teal':'rgb(122, 201, 152)'),
+        borderColor: (colorMode == 'dark' ? 'teal':'rgb(122, 201, 152)'),
         lineTension: 0.3,
         data: chartData
       }]
@@ -89,26 +89,32 @@ export function Home() {
         <meta name="description" content="A simple app to look at sensor information" />
         <link rel="icon" href="/favicon.ico" />
       </Head>
-      <HStack mb={4}>
-        <DatePicker placeholderText="From date" value={fromDate?.toDateString()} onChange={(date: Date) => { setFromDate(date) }} />
-        <DatePicker placeholderText="To date" value={endDate?.toDateString()} onChange={(date: Date) => { setEndDate(date) }} />
-        <Spacer />
-        <Button onClick={() => { setType('hourly') }}>
-          Hourly
-        </Button>
-        <Button onClick={() => { setType('daily') }}>
-          Daily
-        </Button>
-        <Button onClick={() => { setType('weekly') }} disabled={true}>
-          Weekly
-        </Button>
-        <Button onClick={() => { setType('monthly') }} disabled={true}>
-          Monthly
-        </Button>
-      </HStack>
-      <Box h={300} mt={5}>
-        <Line type="line" data={data} options={chartOptions} />
-      </Box>
+      <Flex justify="space-evenly" h="full" direction="column" >
+        <Stack direction={["column", null, "row"]} mb={4}>
+          <Stack direction={["column", "row", "row"]}>
+            <DatePicker placeholderText="From date" value={fromDate?.toDateString()} onChange={(date: Date) => { setFromDate(date) }} />
+            <DatePicker placeholderText="To date" value={endDate?.toDateString()} onChange={(date: Date) => { setEndDate(date) }} />
+          </Stack>
+          <Spacer />
+          <HStack>
+            <Button backgroundColor={type == 'hourly' ? (colorMode == 'dark' ? 'teal':'rgb(122, 201, 152)'):''} onClick={() => { setType('hourly') }}>
+              Hourly
+            </Button>
+            <Button backgroundColor={type == 'daily' ? (colorMode == 'dark' ? 'teal':'rgb(122, 201, 152)') : ''} onClick={() => { setType('daily') }}>
+              Daily
+            </Button>
+            <Button onClick={() => { setType('weekly') }} disabled={true}>
+              Weekly
+            </Button>
+            <Button onClick={() => { setType('monthly') }} disabled={true}>
+              Monthly
+            </Button>
+          </HStack>
+        </Stack>
+        <Box h={350} mt={5} w="full">
+          <Line type="line" data={data} options={chartOptions} />
+        </Box>
+      </Flex>
     </>
   )
 }
